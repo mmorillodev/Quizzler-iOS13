@@ -19,7 +19,6 @@ class ViewController: UIViewController {
         ["Four + Two equal six.", "True"],
         ["Five - Three greater than one.", "True"],
         ["Three + Eight is less than ten.", "False"],
-        
     ]
     
     var questionIndex = 0
@@ -30,14 +29,17 @@ class ViewController: UIViewController {
     }
 
     @IBAction func buttonClick(_ sender: UIButton) {
-        if sender.currentTitle == quiz[questionIndex][1] {
-            print("correct")
-        } else {
-            print("wrong")
-        }
+        paintQuestionLabel(sender.currentTitle == quiz[questionIndex][1])
         
-        updateIndex()
-        updateQuestion()
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1500), execute: {
+            self.updateIndex()
+            self.updateQuestion()
+            self.questionLabel.textColor = UIColor.white
+        })
+    }
+    
+    func paintQuestionLabel(_ isCorrect: Bool) {
+        questionLabel.textColor = isCorrect ? UIColor.green : UIColor.red
     }
     
     func updateIndex() {
@@ -50,6 +52,7 @@ class ViewController: UIViewController {
     
     func updateQuestion() {
         questionLabel.text = quiz[questionIndex][0]
+        progressBar.setProgress(Float(questionIndex)/Float(quiz.count), animated: true)
     }
 }
 
